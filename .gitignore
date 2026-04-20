@@ -1,0 +1,19 @@
+# SAM checkpoints (large files)
+TP1/models/
+
+# Diffusion model cache
+TP2/models/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.Python
+
+# IDE
+.idea/
+*.iml
+
+# OS
+.DS_Store
