@@ -144,9 +144,20 @@ streamlit run TP2/app.py --server.port 8501
 | Reproducibility | 2 | 2 | 2 |
 | **Total /10** | **10** | **8** | **4** |
 
-**Run01 :** fond blanc propre, éclairage studio, pas d'artefact, prompt pleinement respecté. Directement utilisable.  
-**Run05 (guid=12) :** très fidèle au prompt mais légère surcontrainte — texture cuir légèrement plastique, possible artefact logo. Utilisable après vérification.  
-**Run09 (str=0.85) :** couleur incorrecte (gris vs bleu), sangles déformées/pendantes, produit non reconnaissable. Inutilisable.
+**Run01 baseline :**
+- Fond blanc uniforme, éclairage studio cohérent, ombre douce sous le sac.
+- Aucun artefact visible (pas de texte fantôme, pas de déformation).
+- Prompt intégralement respecté : cuir noir, cadrage frontal, netteté élevée. Directement publiable.
+
+**Run05 (guidance=12) :**
+- Très fidèle au prompt, contraste élevé, forme très structurée.
+- Texture cuir légèrement "plastique" — surcontrainte du guidance durcit les surfaces.
+- Artefact potentiel : pseudo-logo near la boucle métallique, non reproductible sans inspection.
+
+**Run09 (img2img, strength=0.85) :**
+- Couleur radicalement modifiée (bleu marine → gris foncé) : le produit n'est plus le même.
+- Sangles déformées avec artefacts pendants non présents dans la source.
+- Fond abstrait, posture modifiée : aucune identité produit préservée. Inutilisable.
 
 ### Réflexion finale
 
