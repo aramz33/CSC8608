@@ -1,0 +1,65 @@
+{
+  "audio_path": "TP3/data/call_01.wav",
+  "model_id": "openai/whisper-base",
+  "device": "mps",
+  "audio_duration_s": 39.3143125,
+  "elapsed_s": 4.454387903213501,
+  "rtf": 0.11330194069179007,
+  "segments": [
+    {
+      "segment_id": 0,
+      "start_s": 2.402,
+      "end_s": 7.134,
+      "text": "Hello, thank you for calling customer support. My name is Alex and I will help you today."
+    },
+    {
+      "segment_id": 1,
+      "start_s": 7.458,
+      "end_s": 13.662,
+      "text": "I'm calling about an order that arrived damaged. The package was delivered yesterday, but the screen is cracked."
+    },
+    {
+      "segment_id": 2,
+      "start_s": 14.018,
+      "end_s": 17.694,
+      "text": "I would like a refund or replacement as soon as possible."
+    },
+    {
+      "segment_id": 3,
+      "start_s": 18.882,
+      "end_s": 23.806,
+      "text": "The order number is AX19735."
+    },
+    {
+      "segment_id": 4,
+      "start_s": 24.258,
+      "end_s": 27.198,
+      "text": "You can reach me at john.smith."
+    },
+    {
+      "segment_id": 5,
+      "start_s": 27.33,
+      "end_s": 27.838,
+      "text": "That's..."
+    },
+    {
+      "segment_id": 6,
+      "start_s": 28.162,
+      "end_s": 29.534,
+      "text": "Example.com."
+    },
+    {
+      "segment_id": 7,
+      "start_s": 30.306,
+      "end_s": 35.038,
+      "text": "Also my phone number is 5550199."
+    },
+    {
+      "segment_id": 8,
+      "start_s": 35.202,
+      "end_s": 35.678,
+      "text": "Thank you."
+    }
+  ],
+  "full_text": "Hello, thank you for calling customer support. My name is Alex and I will help you today. I'm calling about an order that arrived damaged. The package was delivered yesterday, but the screen is cracked. I would like a refund or replacement as soon as possible. The order number is AX19735. You can reach me at john.smith. That's... Example.com. Also my phone number is 5550199. Thank you."
+}

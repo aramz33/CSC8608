@@ -4,6 +4,12 @@ TP1/models/
 # Diffusion model cache
 TP2/models/
 
+# TP3 audio data (large files — not committed)
+TP3/data/*.wav
+TP3/data/*.mp3
+TP3/data/*.m4a
+TP3/outputs/*.wav
+
 # Python
 .venv/
 __pycache__/

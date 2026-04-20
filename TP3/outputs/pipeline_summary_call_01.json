@@ -1,0 +1,16 @@
+{
+  "audio_path": "TP3/data/call_01.wav",
+  "duration_s": 39.3143125,
+  "num_segments": 9,
+  "speech_ratio": 0.7519907667214071,
+  "asr_model": "openai/whisper-base",
+  "asr_device": "mps",
+  "asr_rtf": 0.11330194069179007,
+  "intent": "delivery_issue",
+  "pii_stats": {
+    "emails": 0,
+    "phones": 0,
+    "orders": 1
+  },
+  "tts_generated": true
+}

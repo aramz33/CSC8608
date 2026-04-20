@@ -1,0 +1,62 @@
+{
+  "audio_path": "TP3/data/call_01.wav",
+  "model_id": "openai/whisper-base",
+  "device": "mps",
+  "audio_duration_s": 39.3143125,
+  "elapsed_s": 4.454387903213501,
+  "rtf": 0.11330194069179007,
+  "pii_stats": {
+    "emails": 0,
+    "phones": 0,
+    "orders": 1
+  },
+  "intent_scores": {
+    "refund_or_replacement": 4,
+    "delivery_issue": 7,
+    "general_support": 6
+  },
+  "intent": "delivery_issue",
+  "top_terms": [
+    [
+      "order",
+      3
+    ],
+    [
+      "thank",
+      2
+    ],
+    [
+      "calling",
+      2
+    ],
+    [
+      "number",
+      2
+    ],
+    [
+      "hello",
+      1
+    ],
+    [
+      "customer",
+      1
+    ],
+    [
+      "support",
+      1
+    ],
+    [
+      "name",
+      1
+    ],
+    [
+      "alex",
+      1
+    ],
+    [
+      "will",
+      1
+    ]
+  ],
+  "redacted_text": "hello, thank you 4 calling customer support.my name is alex and i will help you today.im calling about an order that arrived damaged.the package was delivered yesterday, but the screen is cracked.i would like a refund or replacement as soon as possible.the order number is [REDACTED_ORDER]@john.smith.thats example.com.also my phone number is 5550199.thank you."
+}
