@@ -1,9 +1,5 @@
 # TP6 – XAI : IA Explicable et Interprétable
 
-## Dépôt
-
-Lien : https://github.com/adamramsis/CSC8608
-
 ## Environnement d'exécution
 
 - Machine : MacBook M3 (Apple Silicon)

@@ -1,9 +1,5 @@
 # TP3 – Deep learning pour l'audio
 
-## Dépôt
-
-Lien : https://github.com/adamramsis/CSC8608
-
 ## Environnement d'exécution
 
 | Librairie | Version |
