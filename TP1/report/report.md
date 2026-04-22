@@ -2,12 +2,11 @@
 
 ## Dépôt
 
-Lien : [à compléter après création du dépôt GitHub]
+Lien : https://github.com/aramz33/CSC8608
 
-## Environnement d'exécution
+## Exercice 1 – Initialisation, environnement et lancement UI
 
-Exécution en local sur MacBook M3 (Apple Silicon). Pas de SLURM ni de nœud GPU distant.
-Accélération matérielle via MPS (Metal Performance Shaders, PyTorch).
+**Environnement d'exécution :** MacBook M3 (Apple Silicon). Pas de SLURM ni de nœud GPU distant — exécution 100% locale avec MPS (Metal Performance Shaders, PyTorch).
 
 ```
 torch 2.11.0
@@ -16,9 +15,16 @@ cuda False
 device utilisé : mps
 ```
 
-Import `segment_anything` : ok — `python -c "import streamlit, cv2, numpy; print('ok'); import segment_anything; print('sam_ok')"` retourne `ok` puis `sam_ok`.
+Import `segment_anything` vérifié :
+```bash
+python -c "import streamlit, cv2, numpy; print('ok'); import segment_anything; print('sam_ok')"
+# → ok
+# → sam_ok
+```
 
-Lancement UI : `streamlit run TP1/src/app.py --server.port 8501` — accessible sur `http://localhost:8501` (pas de tunnel SSH, exécution 100% locale).
+Lancement UI : `streamlit run TP1/src/app.py --server.port 8501` — accessible sur `http://localhost:8501`.
+
+![UI Streamlit — localhost:8501](screenshots/streamlit_ui.png)
 
 ## Arborescence TP1/
 
@@ -80,10 +86,10 @@ Modèle utilisé : **vit_b** (`sam_vit_b_01ec64.pth`). Choix justifié par les c
 Test rapide (image `baboon.jpg`, bbox [50, 50, 250, 250]) :
 
 ```
-img (1500, 2250, 3)  mask (1500, 2250)  score 0.781  mask_sum 11299
+img (512, 512, 3)  mask (512, 512)  score 0.871  mask_sum 9016
 ```
 
-Le modèle se charge correctement sur MPS. Le masque a bien la même shape que l'image d'entrée et le score de confiance (0.781) est cohérent pour une bbox arbitraire. L'inférence est rapide (~2 s sur M3), sans nécessiter de GPU dédié.
+Le modèle se charge correctement sur MPS. Le masque a la même shape que l'image d'entrée (512×512) et le score 0.871 est cohérent pour une bbox arbitraire sur fourrure dense. L'inférence est quasi-instantanée sur M3 sans GPU dédié.
 
 ---
 
@@ -135,34 +141,46 @@ UI lancée localement sur `http://localhost:8501`. Testée sur 3 images :
 
 ## Exercice 6 – Points FG/BG + multimask
 
-Test sur `groceries.jpg` — même bbox que l'exercice 5, ajout d'un point FG au centre du sac rouge :
+### Image 1 – `groceries.jpg` (objets imbriqués, couleurs proches)
 
-| Mode | Score | Aire (px) | Périmètre | Temps (ms) |
-|------|------:|----------:|----------:|-----------:|
-| Bbox seule | 0.747 | 23 825 | 2 584.0 | 1 921.6 |
-| Bbox + 1 point FG | **0.944** | 29 042 | 2 370.6 | 4 577.9 |
+Même bbox que l'exercice 5, ajout d'un point FG au centre du sac rouge :
 
-![Groceries — bbox + point FG](screenshots/groceries_fg_point_screenshot.png)
+| Mode | Points utilisés | Score | Aire (px) | Périmètre | Temps (ms) |
+|------|----------------|------:|----------:|----------:|-----------:|
+| Bbox seule | — | 0.747 | 23 825 | 2 584.0 | 1 921.6 |
+| Bbox + 1 pt FG | (482, 265) FG | **0.944** | 29 042 | 2 370.6 | 4 577.9 |
 
-L'ajout d'un seul point foreground fait passer le score de 0.747 à 0.944 : SAM lève l'ambiguïté entre les sacs et isole correctement le sac rouge. Le temps de traitement double (~4.5 s vs ~2 s) car `set_image` est rappelé avec les coordonnées de points supplémentaires.
+![Groceries — bbox seule puis bbox + point FG](screenshots/groceries_fg_point_screenshot.png)
 
-Les points BG sont utiles quand le fond est inclus dans la bbox (ex : plancher du coffre) — un seul point BG suffit à l'exclure du masque sans modifier la bbox.
+Masque candidat retenu : index 0 (meilleur score). L'ajout d'un point FG fait passer le score de 0.747 à 0.944 — SAM lève l'ambiguïté entre les sacs et isole correctement le sac rouge.
 
 ---
 
-## Réflexion finale
+### Image 2 – `transparent_obj.png` (dés transparents, occultation, fond noir)
 
-**Limites observées :**
+Bbox englobant les deux dés du haut (x1=113, y1=23, x2=669, y2=267) :
 
-- Sans point de guidage, SAM ne résout pas l'ambiguïté quand plusieurs objets similaires se trouvent dans la bbox. Le score reflète cette incertitude, mais l'utilisateur doit interpréter le résultat lui-même.
-- Sur M3 (MPS), l'inférence prend ~2 s par requête avec vit_b. vit_h serait trop lent sans GPU dédié. Pour une UI interactive fluide, un modèle plus léger (EfficientSAM, MobileSAM) serait nécessaire.
-- La saisie bbox par 4 sliders est fonctionnelle mais peu ergonomique : un vrai cas d'usage demanderait un dessin direct sur l'image.
-- Le modèle est gardé en mémoire via `@st.cache_resource` — efficace pour une session, mais la mémoire n'est pas libérée entre les images.
+| Mode | Points utilisés | Score | Aire (px) | Périmètre | Temps (ms) |
+|------|----------------|------:|----------:|----------:|-----------:|
+| Bbox seule | — | **0.944** | 75 082 | 2 566.9 | 1 934.3 |
+| Bbox + 1 pt FG | centre dé rouge | 0.883 | 82 667 | 2 292.6 | 1 914.8 |
 
-**Pistes d'industrialisation :**
+![Transparent obj — bbox seule](screenshots/transparent_obj_bbox_only.png)
 
-- Remplacer les sliders par un composant de dessin interactif (`streamlit-drawable-canvas`) pour une UX réaliste.
-- Architecture de service : SAM comme microservice GPU exposé via API REST, UI en client léger — séparation claire calcul / présentation.
-- Cache d'embeddings image : `predictor.set_image` est coûteux ; si l'image ne change pas, réutiliser l'embedding et ne relancer que le décodeur de masque.
-- Pour la production, SAM 2 (Meta, 2024) offre de meilleures performances sur images statiques et supporte la vidéo, avec des variantes légères adaptées au déploiement.
-- Traçabilité : logger les paramètres (image, bbox, points, score, temps) dans `outputs/logs/` au format JSON pour reproductibilité et audit.
+![Transparent obj — bbox + point FG](screenshots/transparent_obj_fg_point.png)
+
+Masque candidat retenu : index 0. Résultat contre-intuitif : le point FG *baisse* le score (0.944 → 0.883) et élargit le masque (+7 585 px). Sur un fond noir uniforme, SAM distingue déjà bien les dés sans guidage — ajouter un point FG sur le dé rouge l'incite à agréger les dés voisins plutôt qu'à isoler la cible, ce qui nuit à la précision.
+
+**Bilan comparatif :** les points BG sont indispensables quand la bbox capture un fond non-uniforme ou des entités parasites proches de l'objet cible (`groceries.jpg` : plancher du coffre). Sur fond homogène (`transparent_obj.png`), la bbox seule suffit — les points FG peuvent dégrader le résultat si les objets voisins sont de même nature. Les cas qui restent difficiles : occultation partielle (dés superposés), transparence (contours mal définis par l'alpha), et objets multiples identiques dans la même bbox sans point BG explicite pour les exclure.
+
+---
+
+## Exercice 7 – Bilan et réflexion
+
+**Facteurs principaux d'échec de segmentation :**
+
+Trois facteurs expliquent la majorité des segmentations de mauvaise qualité observées. Premièrement, l'ambiguïté de la bbox : quand elle englobe plusieurs objets similaires (ex. `groceries.jpg`, plusieurs sacs de même couleur), SAM ne peut pas déterminer seul l'objet cible — le score chute et le masque capture une union arbitraire des objets. Solution actionnable : forcer une contrainte de ratio (aire_bbox / aire_image < 0.25) et avertir l'utilisateur si la bbox contient vraisemblablement plusieurs entités (heuristique : score < 0.75 + périmètre élevé). Deuxièmement, les textures et transparences : sur `baboon.jpg` (fourrure dense) et `transparent_obj.png`, les contours sont mal définis et SAM produit des masques fragmentés ou imprécis. Le seul remède fiable est d'ajouter des points FG/BG pour guider le décodeur. Troisièmement, la résolution d'entrée : vit_b travaille sur des embeddings 64×64, ce qui perd le détail fin sur les petits objets ou les bords complexes — passer à vit_h ou utiliser des patches à plus haute résolution améliore la précision au coût d'une latence plus élevée.
+
+**Signaux à monitorer en production :**
+
+Pour détecter des régressions ou une dérive sans relire les masques manuellement, cinq signaux mesurables suffisent à couvrir les défaillances critiques. (1) **Score de confiance moyen** (rolling 7 jours) : une baisse soutenue indique une dérive de la distribution des images d'entrée — les bboxes proposées deviennent moins adaptées au type d'images traitées. (2) **Taux de masques vides** (`aire == 0`) : doit rester < 1 % ; un pic signale soit un bug d'intégration (bbox hors image), soit une régression du modèle après mise à jour. (3) **Latence d'inférence p95** : une hausse progressive sans changement de charge détecte une fuite mémoire (embedding non libéré) ou une saturation GPU ; un seuil d'alerte à +30 % de la baseline suffit. (4) **Distribution des aires de masques** (moyenne et écart-type) : une dérive de la moyenne détecte un changement du type de requêtes (objets plus petits/grands) ; un écart-type qui explose révèle des bboxes incohérentes soumises par les utilisateurs. (5) **Taux de sauvegarde overlay** (clics "Sauvegarder" / segmentations totales) : proxy de satisfaction — si l'utilisateur ne sauvegarde pas, le masque ne lui convient pas ; une baisse de ce ratio est un signal précoce de dégradation de la qualité perçue avant même que les métriques automatiques ne l'indiquent.
