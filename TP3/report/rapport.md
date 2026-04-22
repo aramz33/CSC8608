@@ -78,7 +78,17 @@ Le device MPS est disponible (Apple Silicon M3). Le Log-Mel de shape `(1, 80, 10
 
 L'enregistrement `call_01.wav` simule un appel client signalant une commande endommagée, incluant des éléments PII (numéro de commande, email épelé, numéro de téléphone). Le fichier est en WAV mono 16 kHz.
 
-### Métadonnées audio
+### Métadonnées audio (ffprobe)
+
+```
+Input #0, wav, from 'TP3/data/call_01.wav':
+  Metadata:
+    encoder         : Lavf62.12.100
+  Duration: 00:00:39.31, bitrate: 256 kb/s
+  Stream #0:0: Audio: pcm_s16le, 16000 Hz, 1 channels, s16, 256 kb/s
+```
+
+### Inspect audio
 
 ```
 path: TP3/data/call_01.wav
@@ -142,12 +152,12 @@ En passant de 0.30 à 0.60, deux micro-segments disparaissent (`That's...` et `T
 model_id: openai/whisper-base
 device: mps
 audio_duration_s: 39.31
-elapsed_s: 4.45
-rtf: 0.113
+elapsed_s: 4.12
+rtf: 0.105
 saved: TP3/outputs/asr_call_01.json
 ```
 
-RTF de 0.113 : Whisper-base traite l'audio ~9× plus vite que le temps réel sur CPU (MPS non utilisé par le pipeline HuggingFace). Très en-dessous du budget de 5 minutes.
+RTF de 0.105 : Whisper-base traite l'audio ~9.5× plus vite que le temps réel sur MPS. Très en-dessous du budget de 5 minutes.
 
 ### Extrait segments (5 premiers)
 
@@ -226,22 +236,25 @@ L'erreur la plus impactante est la fragmentation de l'email : Whisper transcrit 
 ```
 tts_model_id: facebook/mms-tts-eng
 device: cpu
-audio_dur_s: 8.38
-elapsed_s: 0.95
-rtf: 0.114
+audio_dur_s: 8.19
+elapsed_s: 1.24
+rtf: 0.151
 saved: TP3/outputs/tts_reply_call_01.wav
 ```
 
-### Métadonnées WAV généré
+### Métadonnées WAV généré (ffprobe)
 
 ```
-Duration: 00:00:08.38
-Audio: pcm_s16le, 16000 Hz, 1 channels (mono), 256 kb/s
+Input #0, wav, from 'TP3/outputs/tts_reply_call_01.wav':
+  Metadata:
+    encoder         : Lavf62.12.100
+  Duration: 00:00:08.19, bitrate: 256 kb/s
+  Stream #0:0: Audio: pcm_s16le, 16000 Hz, 1 channels, s16, 256 kb/s
 ```
 
 ### Observation qualité TTS
 
-`facebook/mms-tts-eng` produit une voix intelligible avec une prosodie correcte mais légèrement monotone (pas d'intonation interrogative sur "Please confirm your preferred option"). Aucun artefact métallique notable. Le RTF de 0.114 est excellent : la synthèse est ~9× plus rapide que le temps réel, compatible avec une utilisation en temps réel en production. La qualité est suffisante pour un prototype call center.
+`facebook/mms-tts-eng` produit une voix intelligible avec une prosodie correcte mais légèrement monotone (pas d'intonation interrogative sur "Please confirm your preferred option"). Aucun artefact métallique notable. Le RTF de 0.151 est excellent : la synthèse est ~6.6× plus rapide que le temps réel, compatible avec une utilisation en temps réel en production. La qualité est suffisante pour un prototype call center.
 
 ### ASR sur WAV TTS (vérification intelligibilité)
 
@@ -263,15 +276,16 @@ Whisper retranscrit le WAV TTS avec une fidélité quasi-parfaite au texte sourc
 ```
 === PIPELINE SUMMARY ===
 audio_path: TP3/data/call_01.wav
-duration_s: 39.31
+duration_s: 39.3143125
 num_segments: 9
-speech_ratio: 0.752
+speech_ratio: 0.7519907667214071
 asr_model: openai/whisper-base
 asr_device: mps
-asr_rtf: 0.113
+asr_rtf: 0.10525329447887762
 intent: delivery_issue
 pii_stats: {'emails': 0, 'phones': 0, 'orders': 1}
 tts_generated: True
+saved: TP3/outputs/pipeline_summary_call_01.json
 ```
 
 ### pipeline_summary_call_01.json
@@ -284,7 +298,7 @@ tts_generated: True
   "speech_ratio": 0.7519907667214071,
   "asr_model": "openai/whisper-base",
   "asr_device": "mps",
-  "asr_rtf": 0.11330194069179007,
+  "asr_rtf": 0.10525329447887762,
   "intent": "delivery_issue",
   "pii_stats": {"emails": 0, "phones": 0, "orders": 1},
   "tts_generated": true
