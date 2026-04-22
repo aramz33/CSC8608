@@ -3,8 +3,8 @@
   "model_id": "openai/whisper-base",
   "device": "mps",
   "audio_duration_s": 39.3143125,
-  "elapsed_s": 4.454387903213501,
-  "rtf": 0.11330194069179007,
+  "elapsed_s": 4.137960910797119,
+  "rtf": 0.10525329447887762,
   "segments": [
     {
       "segment_id": 0,

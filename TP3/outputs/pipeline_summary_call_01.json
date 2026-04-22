@@ -5,7 +5,7 @@
   "speech_ratio": 0.7519907667214071,
   "asr_model": "openai/whisper-base",
   "asr_device": "mps",
-  "asr_rtf": 0.11330194069179007,
+  "asr_rtf": 0.10525329447887762,
   "intent": "delivery_issue",
   "pii_stats": {
     "emails": 0,
