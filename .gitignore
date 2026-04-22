@@ -1,25 +1,26 @@
-# SAM checkpoints (large files)
+TP4/data/
+TP4/runs/
+
 TP1/models/
 
-# Diffusion model cache
 TP2/models/
 
-# TP3 audio data (large files — not committed)
 TP3/data/*.wav
 TP3/data/*.mp3
 TP3/data/*.m4a
 TP3/outputs/*.wav
 
-# Python
+TP6/data/
+
 .venv/
 __pycache__/
 *.pyc
 *.pyo
 .Python
 
-# IDE
 .idea/
 *.iml
 
-# OS
 .DS_Store
+
+CSC*.html

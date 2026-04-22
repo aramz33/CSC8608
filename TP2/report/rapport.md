@@ -1,7 +1,7 @@
 # TP2 – Génération d'image (Diffusion)
 
 ## Dépôt
-Lien : [https://github.com/](https://github.com/)
+Lien : [https://github.com/aramz33/CSC8608](https://github.com/aramz33/CSC8608)
 
 ## Environnement d'exécution
 - Device : MPS (MacBook M3)
